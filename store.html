@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Family Vault — Updates</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #080a0f;
+      --bg2:      #0d1017;
+      --surface:  #111520;
+      --surface2: #161b29;
+      --surface3: #1c2233;
+      --border:   #1f2740;
+      --border2:  #2a3555;
+      --gold:     #c8a96e;
+      --gold2:    #e8c98e;
+      --teal:     #4ecdc4;
+      --purple:   #a78bfa;
+      --danger:   #f87171;
+      --success:  #4ade80;
+      --text:     #e2e8f0;
+      --muted:    #64748b;
+      --muted2:   #94a3b8;
+      --r:        14px;
+      --font:     'Syne', sans-serif;
+      --mono:     'DM Mono', monospace;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── BACKGROUND ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 10% -10%, rgba(200,169,110,.07) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 50% at 90% 110%, rgba(78,205,196,.05) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(167,139,250,.03) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* grid lines */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.015) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none; z-index: 0;
+    }
+
+    .wrap {
+      position: relative; z-index: 1;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 48px 20px 80px;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 56px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .logo-area { display: flex; align-items: center; gap: 14px; }
+    .logo-icon {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, var(--gold) 0%, #8b6914 100%);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 0 30px rgba(200,169,110,.25);
+    }
+    .logo-text h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -.02em;
+    }
+    .logo-text p {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .admin-login-btn {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .admin-login-btn:hover { color: var(--gold); border-color: rgba(200,169,110,.4); }
+
+    /* ── APP CARD ── */
+    .app-hero {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      margin-bottom: 40px;
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      position: relative;
+      overflow: hidden;
+    }
+    .app-hero::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: -1px; right: -1px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), var(--teal), transparent);
+    }
+    .app-icon-lg {
+      width: 88px; height: 88px;
+      background: linear-gradient(135deg, #1a1408 0%, #2d2010 50%, #1a1408 100%);
+      border: 1px solid rgba(200,169,110,.3);
+      border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 42px;
+      flex-shrink: 0;
+      box-shadow: 0 8px 32px rgba(0,0,0,.5), inset 0 1px 0 rgba(200,169,110,.15);
+    }
+    .app-meta { flex: 1; min-width: 200px; }
+    .app-name {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .app-developer {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--gold);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .app-desc {
+      font-size: 13px;
+      color: var(--muted2);
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+    .app-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tag {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--border2);
+      color: var(--muted2);
+      background: var(--surface2);
+    }
+    .tag.gold { border-color: rgba(200,169,110,.35); color: var(--gold); background: rgba(200,169,110,.06); }
+    .tag.teal { border-color: rgba(78,205,196,.35); color: var(--teal); background: rgba(78,205,196,.06); }
+
+    /* ── STATS ROW ── */
+    .stats-row {
+      display: flex;
+      gap: 1px;
+      background: var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 40px;
+    }
+    .stat-item {
+      flex: 1;
+      background: var(--surface);
+      padding: 16px 12px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -.02em;
+      display: block;
+    }
+    .stat-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      margin-top: 3px;
+      display: block;
+    }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── VERSION CARDS ── */
+    #releases-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .release-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      overflow: hidden;
+      transition: border-color .2s, box-shadow .2s;
+      animation: slideIn .4s ease both;
+    }
+    .release-card:hover { border-color: var(--border2); box-shadow: 0 4px 24px rgba(0,0,0,.3); }
+
+    .release-card.latest {
+      border-color: rgba(200,169,110,.35);
+      box-shadow: 0 0 0 1px rgba(200,169,110,.1);
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .release-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      cursor: pointer;
+      user-select: none;
+      transition: background .15s;
+    }
+    .release-header:hover { background: var(--surface2); }
+
+    .version-badge {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .version-badge.latest {
+      background: rgba(200,169,110,.15);
+      border: 1px solid rgba(200,169,110,.4);
+      color: var(--gold);
+    }
+    .version-badge.old {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--muted2);
+    }
+
+    .release-title {
+      flex: 1;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -.01em;
+    }
+    .release-date {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .release-chevron {
+      color: var(--muted);
+      font-size: 10px;
+      transition: transform .25s;
+      flex-shrink: 0;
+    }
+    .release-card.open .release-chevron { transform: rotate(180deg); }
+
+    .release-body { display: none; padding: 0 20px 20px; }
+    .release-card.open .release-body { display: block; }
+
+    .release-notes {
+      font-size: 13px;
+      color: var(--muted2);
+      line-height: 1.8;
+      margin-bottom: 16px;
+      white-space: pre-wrap;
+      font-family: var(--mono);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--gold) 0%, #a87c30 100%);
+      color: #0a0800;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 10px 22px;
+      border-radius: 8px;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: opacity .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 4px 16px rgba(200,169,110,.25);
+    }
+    .download-btn:hover { opacity: .9; transform: translateY(-1px); box-shadow: 0 6px 24px rgba(200,169,110,.35); }
+    .download-btn:active { transform: translateY(0); }
+
+    .latest-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: rgba(200,169,110,.08);
+      border: 1px solid rgba(200,169,110,.2);
+      border-radius: 20px;
+      padding: 4px 12px;
+    }
+    .pulse {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%  { opacity: .5; transform: scale(1.3); }
+    }
+
+    .empty-releases {
+      text-align: center;
+      padding: 60px 20px;
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: var(--r);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: .1em;
+    }
+
+    /* ─────────────────────────────────
+       ADMIN OVERLAY
+    ───────────────────────────────── */
+    .overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(5,7,12,.85);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      animation: fadeIn .2s ease;
+    }
+    .overlay.show { display: flex; }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      padding: 32px;
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: scaleIn .25s cubic-bezier(.34,1.56,.64,1);
+      position: relative;
+    }
+    @keyframes scaleIn { from{opacity:0;transform:scale(.93)} to{opacity:1;transform:scale(1)} }
+
+    .modal-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+      letter-spacing: -.02em;
+    }
+    .modal-sub {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .modal-close:hover { color: var(--text); border-color: var(--border2); }
+
+    /* FORM ELEMENTS */
+    .field-group { margin-bottom: 16px; }
+    .field-label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .field-input, .field-textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .field-input:focus, .field-textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(200,169,110,.1);
+    }
+    .field-textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+
+    .field-hint {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+    .field-hint a { color: var(--teal); text-decoration: none; }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      border: none; border-radius: 8px;
+      padding: 10px 18px;
+      font-family: var(--mono); font-size: 10px; font-weight: 500;
+      letter-spacing: .12em; text-transform: uppercase;
+      cursor: pointer; transition: all .2s;
+    }
+    .btn:hover { opacity: .85; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn-gold   { background: var(--gold); color: #0a0800; }
+    .btn-ghost  { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+    .btn-ghost:hover { border-color: var(--border2); color: var(--text); opacity: 1; }
+    .btn-danger { background: transparent; border: 1px solid rgba(248,113,113,.35); color: var(--danger); }
+    .btn-danger:hover { background: rgba(248,113,113,.08); opacity: 1; }
+    .btn-full { width: 100%; }
+    .btn-sm { padding: 6px 12px; font-size: 9px; border-radius: 6px; }
+
+    .error-box {
+      display: none; margin-top: 10px;
+      background: rgba(248,113,113,.1);
+      border: 1px solid rgba(248,113,113,.3);
+      border-radius: 6px; padding: 10px 14px;
+      color: var(--danger); font-family: var(--mono); font-size: 11px;
+    }
+
+    /* ADMIN RELEASE ROW */
+    .admin-release-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 16px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .admin-release-v {
+      font-family: var(--mono); font-size: 11px; color: var(--gold);
+      background: rgba(200,169,110,.1); border: 1px solid rgba(200,169,110,.25);
+      border-radius: 20px; padding: 2px 10px; white-space: nowrap;
+    }
+    .admin-release-title { flex: 1; font-size: 13px; font-weight: 600; min-width: 120px; }
+    .admin-release-date  { font-family: var(--mono); font-size: 10px; color: var(--muted); white-space: nowrap; }
+
+    /* DIVIDER */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+    /* TOAST */
+    #toast {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--surface2);
+      border: 1px solid var(--success);
+      color: var(--success);
+      border-radius: 8px; padding: 10px 24px;
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: .14em; text-transform: uppercase;
+      pointer-events: none; z-index: 9999;
+      transition: transform .3s cubic-bezier(.34,1.56,.64,1), opacity .3s;
+      opacity: 0; white-space: nowrap;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    #toast.err  { border-color: var(--danger); color: var(--danger); }
+
+    @media (max-width: 540px) {
+      .app-hero { flex-direction: column; }
+      .stats-row { flex-direction: column; gap: 1px; }
+      .release-header { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ── HEADER ── -->
+  <header class="site-header">
+    <div class="logo-area">
+      <div class="logo-icon">🔐</div>
+      <div class="logo-text">
+        <h1>Family Vault</h1>
+        <p>Release Channel</p>
+      </div>
+    </div>
+    <button class="admin-login-btn" onclick="openAdminLogin()">⚙ Admin</button>
+  </header>
+
+  <!-- ── APP HERO ── -->
+  <div class="app-hero">
+    <div class="app-icon-lg">🔐</div>
+    <div class="app-meta">
+      <div class="app-name">Family Vault</div>
+      <div class="app-developer">Ιδιωτική Οικογενειακή Εφαρμογή</div>
+      <div class="app-desc">Ασφαλής αποθήκευση οικογενειακών εγγράφων, στοιχείων και αρχείων. Λειτουργεί τοπικά χωρίς server — τα δεδομένα παραμένουν στη συσκευή σας.</div>
+      <div class="app-tags">
+        <span class="tag gold">Ιδιωτικό</span>
+        <span class="tag teal">Offline</span>
+        <span class="tag">HTML</span>
+        <span class="tag">Χωρίς Backend</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STATS ── -->
+  <div class="stats-row" id="stats-row">
+    <div class="stat-item">
+      <span class="stat-value" id="stat-version">—</span>
+      <span class="stat-label">Τελευταία Έκδοση</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value" id="stat-count">0</span>
+      <span class="stat-label">Εκδόσεις</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value" id="stat-date">—</span>
+      <span class="stat-label">Τελευταία Ενημέρωση</span>
+    </div>
+  </div>
+
+  <!-- ── RELEASES ── -->
+  <div class="section-title">Ιστορικό Εκδόσεων</div>
+  <div id="releases-list">
+    <div class="empty-releases">Δεν υπάρχουν εκδόσεις ακόμα.<br>Συνδεθείτε ως Admin για να προσθέσετε.</div>
+  </div>
+
+</div><!-- /wrap -->
+
+<!-- ══════════════════════════════════
+     ADMIN LOGIN MODAL
+══════════════════════════════════ -->
+<div class="overlay" id="overlay-login">
+  <div class="modal">
+    <button class="modal-close" onclick="closeOverlay('overlay-login')">✕</button>
+    <div class="modal-title">Admin Login</div>
+    <div class="modal-sub">Family Vault — Διαχείριση Εκδόσεων</div>
+    <div class="field-group">
+      <label class="field-label">Κωδικός Admin</label>
+      <input type="password" id="admin-pwd-input" class="field-input" placeholder="••••••••"
+        onkeydown="if(event.key==='Enter')doAdminLogin()" autocomplete="off"/>
+    </div>
+    <div class="error-box" id="login-err">⚠ Λάθος κωδικός.</div>
+    <button class="btn btn-gold btn-full" style="margin-top:4px" onclick="doAdminLogin()">Είσοδος →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     ADMIN PANEL MODAL
+══════════════════════════════════ -->
+<div class="overlay" id="overlay-admin">
+  <div class="modal" style="max-width:600px">
+    <button class="modal-close" onclick="closeOverlay('overlay-admin');doAdminLogout()">✕</button>
+    <div class="modal-title">⚙ Admin Panel</div>
+    <div class="modal-sub">Διαχείριση Εκδόσεων</div>
+
+    <!-- ADD RELEASE FORM -->
+    <div style="margin-bottom:24px">
+      <div class="section-title" style="margin-bottom:14px">Νέα Έκδοση</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div class="field-group" style="margin:0">
+          <label class="field-label">Έκδοση *</label>
+          <input type="text" id="f-version" class="field-input" placeholder="π.χ. 1.0.0" />
+        </div>
+        <div class="field-group" style="margin:0">
+          <label class="field-label">Τίτλος *</label>
+          <input type="text" id="f-title" class="field-input" placeholder="π.χ. Αρχική Έκδοση" />
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Google Drive URL *</label>
+        <input type="url" id="f-url" class="field-input" placeholder="https://drive.google.com/file/d/.../view?usp=sharing" />
+        <div class="field-hint">
+          Στο Google Drive: κλικ δεξί → «Λήψη συνδέσμου» → «Αντιγραφή συνδέσμου»
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Σημειώσεις Έκδοσης</label>
+        <textarea id="f-notes" class="field-textarea" placeholder="- Νέο χαρακτηριστικό X&#10;- Διόρθωση σφάλματος Y&#10;- Βελτίωση Z"></textarea>
+      </div>
+
+      <div class="error-box" id="add-err"></div>
+      <button class="btn btn-gold btn-full" onclick="addRelease()">➕ Δημοσίευση Έκδοσης</button>
+    </div>
+
+    <hr class="divider"/>
+
+    <!-- EXISTING RELEASES -->
+    <div class="section-title" style="margin-bottom:14px">Δημοσιευμένες Εκδόσεις</div>
+    <div id="admin-releases-list">
+      <p style="color:var(--muted);font-family:var(--mono);font-size:11px">Καμία έκδοση ακόμα.</p>
+    </div>
+
+    <hr class="divider"/>
+
+    <!-- CHANGE ADMIN PASSWORD -->
+    <div style="margin-bottom:24px">
+      <div class="section-title" style="margin-bottom:14px">Αλλαγή Κωδικού Admin</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div>
+          <label class="field-label">Νέος Κωδικός</label>
+          <input type="password" id="new-ap1" class="field-input" placeholder="••••••••"/>
+        </div>
+        <div>
+          <label class="field-label">Επαλήθευση</label>
+          <input type="password" id="new-ap2" class="field-input" placeholder="••••••••"/>
+        </div>
+      </div>
+      <div class="error-box" id="pwd-err">⚠ Οι κωδικοί δεν ταιριάζουν.</div>
+      <button class="btn btn-ghost btn-sm" onclick="changeAdminPwd()">💾 Αποθήκευση Κωδικού</button>
+    </div>
+
+    <hr class="divider"/>
+
+    <!-- DANGER ZONE -->
+    <div>
+      <div class="section-title" style="margin-bottom:10px;color:rgba(248,113,113,.6)">Επικίνδυνη Ζώνη</div>
+      <button class="btn btn-danger btn-sm" onclick="nukeReleases()">🗑 Διαγραφή Όλων των Εκδόσεων</button>
+    </div>
+
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ================================================================
+   FAMILY VAULT STORE
+   ─────────────────
+   Admin password (default): store_admin_2024
+   Storage: localStorage key "fvs_data"
+================================================================ */
+
+const SK = 'fvs_data';
+
+/* ── ENCODE / DECODE ── */
+function e64(s){ return btoa(unescape(encodeURIComponent(s))); }
+function d64(s){ return decodeURIComponent(escape(atob(s))); }
+function uid() { return Math.random().toString(36).slice(2,10)+Date.now().toString(36); }
+
+/* ── DB ── */
+const DEFAULT_DB = { adminHash: e64('store_admin_2024'), releases: [] };
+
+function loadDB(){
+  try { const r=localStorage.getItem(SK); return r?JSON.parse(d64(r)):null; } catch(e){return null;}
+}
+function saveDB(d){ localStorage.setItem(SK, e64(JSON.stringify(d))); }
+function getDB(){
+  let d=loadDB();
+  if(!d){ d=JSON.parse(JSON.stringify(DEFAULT_DB)); saveDB(d); }
+  return d;
+}
+
+/* ── TOAST ── */
+let tt=null;
+function toast(msg,err=false){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.toggle('err',err);
+  el.classList.add('show'); clearTimeout(tt);
+  tt=setTimeout(()=>el.classList.remove('show'),2600);
+}
+
+/* ── OVERLAYS ── */
+function openAdminLogin(){
+  document.getElementById('overlay-login').classList.add('show');
+  setTimeout(()=>document.getElementById('admin-pwd-input').focus(),100);
+}
+function closeOverlay(id){
+  document.getElementById(id).classList.remove('show');
+}
+function doAdminLogout(){
+  // nothing to clear, just close
+}
+
+/* ── LOGIN ── */
+function doAdminLogin(){
+  const raw=document.getElementById('admin-pwd-input').value.trim();
+  if(!raw) return;
+  const db=getDB();
+  if(e64(raw)!==db.adminHash){
+    const e=document.getElementById('login-err');
+    e.style.display='block';
+    setTimeout(()=>e.style.display='none',3000);
+    document.getElementById('admin-pwd-input').value='';
+    document.getElementById('admin-pwd-input').focus();
+    return;
+  }
+  document.getElementById('admin-pwd-input').value='';
+  document.getElementById('login-err').style.display='none';
+  closeOverlay('overlay-login');
+  openAdminPanel();
+}
+
+function openAdminPanel(){
+  renderAdminList();
+  document.getElementById('overlay-admin').classList.add('show');
+}
+
+/* ── CONVERT GOOGLE DRIVE URL TO DIRECT DOWNLOAD ── */
+function driveDirectLink(url){
+  // Handles: /file/d/ID/view, /open?id=ID, direct /uc?id=ID
+  let id = null;
+  const m1 = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  const m2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if(m1) id = m1[1];
+  else if(m2) id = m2[1];
+  if(id) return `https://drive.google.com/uc?export=download&id=${id}`;
+  return url; // fallback to original
+}
+
+/* ── ADD RELEASE ── */
+function addRelease(){
+  const version = document.getElementById('f-version').value.trim();
+  const title   = document.getElementById('f-title').value.trim();
+  const url     = document.getElementById('f-url').value.trim();
+  const notes   = document.getElementById('f-notes').value.trim();
+  const errEl   = document.getElementById('add-err');
+
+  if(!version||!title||!url){
+    errEl.textContent='⚠ Συμπληρώστε Έκδοση, Τίτλο και URL.';
+    errEl.style.display='block';
+    setTimeout(()=>errEl.style.display='none',3000);
+    return;
+  }
+
+  const db=getDB();
+  const now=new Date();
+  const dateStr=now.toLocaleDateString('el-GR',{day:'2-digit',month:'short',year:'numeric'});
+
+  db.releases.unshift({
+    id: uid(),
+    version,
+    title,
+    url: driveDirectLink(url),
+    originalUrl: url,
+    notes,
+    date: dateStr,
+    ts: now.getTime()
+  });
+
+  saveDB(db);
+
+  // Clear form
+  ['f-version','f-title','f-url','f-notes'].forEach(i=>document.getElementById(i).value='');
+
+  toast('✓ Έκδοση '+version+' δημοσιεύτηκε!');
+  renderAdminList();
+  renderReleases();
+}
+
+/* ── DELETE RELEASE ── */
+function deleteRelease(id){
+  if(!confirm('Διαγραφή αυτής της έκδοσης;')) return;
+  const db=getDB();
+  db.releases=db.releases.filter(r=>r.id!==id);
+  saveDB(db);
+  renderAdminList();
+  renderReleases();
+  toast('✓ Έκδοση διαγράφηκε');
+}
+
+/* ── NUKE ── */
+function nukeReleases(){
+  if(!confirm('Διαγραφή ΟΛΩΝ των εκδόσεων;')) return;
+  const db=getDB(); db.releases=[];
+  saveDB(db); renderAdminList(); renderReleases();
+  toast('Εκδόσεις διαγράφηκαν.',true);
+}
+
+/* ── CHANGE ADMIN PASSWORD ── */
+function changeAdminPwd(){
+  const p1=document.getElementById('new-ap1').value.trim();
+  const p2=document.getElementById('new-ap2').value.trim();
+  const err=document.getElementById('pwd-err');
+  if(!p1||p1!==p2){err.style.display='block';setTimeout(()=>err.style.display='none',3000);return;}
+  const db=getDB(); db.adminHash=e64(p1); saveDB(db);
+  document.getElementById('new-ap1').value='';
+  document.getElementById('new-ap2').value='';
+  toast('✓ Κωδικός ενημερώθηκε');
+}
+
+/* ── RENDER ADMIN LIST ── */
+function renderAdminList(){
+  const db=getDB();
+  const el=document.getElementById('admin-releases-list');
+  if(!db.releases.length){
+    el.innerHTML='<p style="color:var(--muted);font-family:var(--mono);font-size:11px">Καμία έκδοση ακόμα.</p>';
+    return;
+  }
+  el.innerHTML='';
+  db.releases.forEach(r=>{
+    const d=document.createElement('div');
+    d.className='admin-release-row';
+    d.innerHTML=`
+      <span class="admin-release-v">v${esc(r.version)}</span>
+      <span class="admin-release-title">${esc(r.title)}</span>
+      <span class="admin-release-date">${esc(r.date)}</span>
+      <button class="btn btn-danger btn-sm" onclick="deleteRelease('${r.id}')">🗑</button>
+    `;
+    el.appendChild(d);
+  });
+}
+
+/* ── RENDER PUBLIC RELEASES ── */
+function renderReleases(){
+  const db=getDB();
+  const el=document.getElementById('releases-list');
+
+  // update stats
+  if(db.releases.length){
+    const latest=db.releases[0];
+    document.getElementById('stat-version').textContent='v'+latest.version;
+    document.getElementById('stat-count').textContent=db.releases.length;
+    document.getElementById('stat-date').textContent=latest.date;
+  } else {
+    document.getElementById('stat-version').textContent='—';
+    document.getElementById('stat-count').textContent='0';
+    document.getElementById('stat-date').textContent='—';
+  }
+
+  if(!db.releases.length){
+    el.innerHTML='<div class="empty-releases">Δεν υπάρχουν εκδόσεις ακόμα.<br><span style="opacity:.5">Συνδεθείτε ως Admin για να προσθέσετε.</span></div>';
+    return;
+  }
+
+  el.innerHTML='';
+  db.releases.forEach((r,i)=>{
+    const isLatest=(i===0);
+    const card=document.createElement('div');
+    card.className='release-card'+(isLatest?' latest':'');
+    if(isLatest) card.classList.add('open'); // auto-open latest
+
+    card.innerHTML=`
+      <div class="release-header" onclick="toggleRelease(this)">
+        <span class="version-badge ${isLatest?'latest':'old'}">v${esc(r.version)}</span>
+        <span class="release-title">${esc(r.title)}</span>
+        ${isLatest?'<span class="latest-label"><span class="pulse"></span>Τελευταία</span>':''}
+        <span class="release-date">${esc(r.date)}</span>
+        <span class="release-chevron">▼</span>
+      </div>
+      <div class="release-body">
+        ${r.notes?`<div class="release-notes">${esc(r.notes)}</div>`:''}
+        <a class="download-btn" href="${esc(r.url)}" target="_blank" rel="noopener">
+          ↓ Κατέβασε index.html — v${esc(r.version)}
+        </a>
+      </div>
+    `;
+    el.appendChild(card);
+  });
+}
+
+function toggleRelease(header){
+  header.closest('.release-card').classList.toggle('open');
+}
+
+function esc(s){
+  return String(s||'')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+
+/* ── INIT ── */
+renderReleases();
+</script>
+</body>
+</html>
